@@ -1,0 +1,111 @@
+/*
+ * Copyright © 2023 Jean-Baptiste Sanchez
+ *
+ * This file is part of Momoro Portfolio 2023.
+ *
+ * For more information, the source code is available at:
+ * https://github.com/jeanbapt-sanchez/momoro-portfolio-2023
+ *
+ * Momoro Portfolio 2023 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@import 'normalize.css';
+
+@font-face {
+  font-family: 'Dream Avenue';
+  src:
+    url('./assets/fonts/dream-avenue/dream-avenue-webfont.ttf') format('truetype'),
+    url('./assets/fonts/dream-avenue/dream-avenue-font.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'N27';
+  src: url('./assets/fonts/n27/n27-regular-webfont.eot');
+  src:
+    url('./assets/fonts/n27/n27-regular-webfont.eot?#iefix') format('embedded-opentype'),
+    url('./assets/fonts/n27/n27-regular-webfont.woff2') format('woff2'),
+    url('./assets/fonts/n27/n27-regular-webfont.woff') format('woff'),
+    url('./assets/fonts/n27/n27-regular-webfont.ttf') format('truetype'),
+    url('./assets/fonts/n27/n27-font.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'N27 Italic';
+  src: url('./assets/fonts/n27/n27-regular-italic.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+body {
+  margin: 0;
+  font-family:
+    'N27',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+:root {
+  --body-font: 'N27', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --title-font: 'Dream Avenue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --white-color: white;
+  --profile-background-color: #c4c4c4;
+  --black-color: black;
+}
+
+.no-scroll {
+  overflow: hidden !important;
+  height: 100%; /* Assurez-vous que l'élément prend toute la hauteur */
+}
+
+.non-selectable {
+  -ms-user-select: none;
+  -webkit-user-select: none; /* Pour Safari */
+  -moz-user-select: none; /* Pour Firefox */
+  user-select: none; /* Pour Internet Explorer/Edge */
+}
+
+.no-snap {
+  scroll-snap-align: none !important;
+}
