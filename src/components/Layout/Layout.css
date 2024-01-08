@@ -1,0 +1,132 @@
+/*
+ * Copyright © 2023 Jean-Baptiste Sanchez
+ *
+ * This file is part of Momoro Portfolio 2023.
+ *
+ * For more information, the source code is available at:
+ * https://github.com/jeanbapt-sanchez/momoro-portfolio-2023
+ *
+ * Momoro Portfolio 2023 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.layout {
+  z-index: 2;
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  pointer-events: none;
+}
+
+.ui-segment {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  pointer-events: auto;
+}
+
+.ui-action {
+  color: var(--default-text-color);
+}
+
+.ui-action--momoro {
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.ui-action--social-button {
+  background-color: transparent;
+  border: 0.01px solid var(--default-text-color);
+  box-shadow:
+    0 0 1px 0px var(--default-text-color) inset,
+    0 0 1px 0px var(--default-text-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.ui-action--contact-button {
+  text-align: left;
+  padding-left: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.ui-segment__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  width: 40px;
+}
+
+.ui-segment__contact--fade-in {
+  animation: fadeInContact 0.25s ease-in-out;
+}
+
+.ui-segment__scroll-hint {
+  text-decoration: underline;
+}
+
+.ui-segment__scroll-hint--fade-in {
+  animation: fadeInScrollHint 1s forwards;
+}
+
+.ui-segment__scroll-hint--fade-out {
+  animation: fadeOutScrollHint 1s forwards;
+}
+
+@keyframes fadeInContact {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScrollHint {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutScrollHint {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

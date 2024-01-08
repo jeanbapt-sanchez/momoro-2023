@@ -20,21 +20,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useContext, useRef } from 'react';
 import { useHideScrollbar, useOnlyHorizontalScroll } from '../../hooks';
 import ReactMarkdown from 'react-markdown';
 import { ProjectContext } from '../../contexts';
-import { Layout, ProjectPhoto } from '../../components';
+import { Layout, ProjectTile } from '../../components';
 import { placeholder } from '../../assets/images';
+import './Project.css';
 
-const ProjectDetails = () => {
+const Project = () => {
   const { projectId } = useParams();
+
   const projectsData = useContext(ProjectContext);
-  const project = projectsData.find((p) => p.id === projectId);
+
+  const project = useMemo(
+    () => projectsData.find((project) => project.id === projectId),
+    [projectsData, projectId],
+  );
 
   const containerRef = useRef(null);
+
   useOnlyHorizontalScroll(containerRef);
   useHideScrollbar();
 
@@ -44,39 +51,33 @@ const ProjectDetails = () => {
     return (
       <Layout>
         <div className="project-details" ref={containerRef}>
-          <div className="project-header">
-            <div className="project-main">
-              <div className="project-content">
-                <h1 className="project-title">{project.title}</h1>
-                <ReactMarkdown className="project-description">{project.description}</ReactMarkdown>
-              </div>
-              {project.photos && project.photos.length > 0 ? (
-                <img
-                  className="project-main-photo"
-                  src={project.photos[0]}
-                  alt={`${project.title} - photo 1`}
-                />
-              ) : (
-                <img
-                  className="project-main-photo"
-                  src={placeholder}
-                  alt={`${project.title} - photo 1`}
-                />
-              )}
+          <div className="cover">
+            <div className="cover__content">
+              <h1 className="cover__title">{project.title}</h1>
+              <ReactMarkdown className="main__description">{project.description}</ReactMarkdown>
             </div>
-            <div className="project-remaining-images">
-              {project.photos &&
-                project.photos
-                  .slice(1)
-                  .map((image, index) => (
-                    <ProjectPhoto
-                      key={index}
-                      src={image}
-                      alt={`${project.title} - photo ${index + 2}`}
-                      index={index}
-                    />
-                  ))}
-            </div>
+            {project.photos && project.photos.length > 0 ? (
+              <img
+                className="cover__photo"
+                src={project.photos[0]}
+                alt={`${project.title} - photo 1`}
+              />
+            ) : (
+              <img className="cover__photo" src={placeholder} alt={`${project.title} - photo 1`} />
+            )}
+          </div>
+          <div className="exhibition">
+            {project.photos &&
+              project.photos
+                .slice(1)
+                .map((image, index) => (
+                  <ProjectTile
+                    key={index}
+                    src={image}
+                    alt={`${project.title} - photo ${index + 2}`}
+                    index={index}
+                  />
+                ))}
           </div>
         </div>
       </Layout>
@@ -84,4 +85,4 @@ const ProjectDetails = () => {
   }
 };
 
-export default ProjectDetails;
+export default memo(Project);

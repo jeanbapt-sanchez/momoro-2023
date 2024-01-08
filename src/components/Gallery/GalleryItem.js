@@ -39,14 +39,12 @@ class GalleryItem {
 
     this.raycaster = new Raycast(this.camera);
 
-    const screenWidth = window.innerWidth;
-
-    if (screenWidth <= 768) {
+    if (window.innerWidth <= 768) {
       // Mobile
       this.imageWidth = (760 / 2) * 0.75;
       this.imageHeight = (500 / 2) * 0.75;
       this.titleFontSize = 96 / 2;
-    } else if (screenWidth > 768 && screenWidth <= 1024) {
+    } else if (window.innerWidth > 768 && window.innerWidth <= 1024) {
       // Tablette
       this.imageWidth = 760 / 2;
       this.imageHeight = 500 / 2;
@@ -63,6 +61,31 @@ class GalleryItem {
     this.createShader();
     this.createMesh();
     this.bindEvents();
+  }
+
+  updateSize() {
+    if (window.innerWidth <= 768) {
+      this.imageWidth = 760;
+      this.imageHeight = 300;
+      this.titleFontSize = 96 / 2;
+    } else if (window.innerWidth > 768 && window.innerWidth <= 1024) {
+      this.imageWidth = 760 / 2;
+      this.imageHeight = 500 / 2;
+      this.titleFontSize = 96 / 1.5;
+    } else {
+      this.imageWidth = 760;
+      this.imageHeight = 500;
+      this.titleFontSize = 96;
+    }
+    const fov = this.camera.fov * (Math.PI / 180);
+    const distanceToPlane = this.camera.position.z;
+    const heightInGLUnits = 2 * Math.tan(fov / 2) * distanceToPlane;
+    const widthInGLUnits = heightInGLUnits * this.camera.aspect;
+    const imageWidthInGLUnits = (this.imageWidth / window.innerWidth) * widthInGLUnits;
+    const imageHeightInGLUnits = (this.imageHeight / window.innerHeight) * heightInGLUnits;
+    this.mesh.scale.x = imageWidthInGLUnits;
+    this.mesh.scale.y = imageHeightInGLUnits;
+    console.log('change dimension', this.mesh.scale.x);
   }
 
   createBackgroundShader() {
@@ -232,6 +255,8 @@ class GalleryItem {
   }
 
   onMouseMove(event) {
+    // Event manage mouse effect on items and on the shaders
+
     // Update Background Shader mouse position
     const cameraZ = this.camera.position.z;
     const aspectRatio = this.camera.aspect;
@@ -302,7 +327,7 @@ class GalleryItem {
     titleElement.style.pointerEvents = 'none'; // to ensure it doesn't interfere with any interactions
     titleElement.style.whiteSpace = 'nowrap';
     titleElement.style.fontSize = `${this.titleFontSize}px`;
-    document.getElementById('canvas-container').appendChild(titleElement);
+    document.getElementById('galleryCanvas').appendChild(titleElement);
     this.titleElement = titleElement;
   }
 

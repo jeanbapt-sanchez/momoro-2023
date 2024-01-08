@@ -25,9 +25,69 @@ import React, { createContext } from 'react';
 export const AboutContext = createContext();
 
 export const AboutProvider = ({ children }) => {
+  const aboutHeadline = `
+  Je me présente, Morgane Rocheteau, je suis née à Bordeaux en 1997, artiste visuelle française prête à explorer les frontières entre la technologie et le réel : rendre tangible une innovation purement virtuelle.
+
+  Originaire d’une famille à cent lieu de tout milieu artistique mais d’un père régisseur de spectacle et une mère dévouée, j’ai su faire preuve de ténacité et d’audace pour intégrer l’industrie du divertissement.
+  
+  Je vois le monde avec un regard neuf et ambitieux. Mon parcours sort des sentiers battus et le chemin pour arriver où je suis aujourd’hui n’a pas été simple. J’ai dû repousser de nombreuses limites tant du côté personnel que professionnel me fixant des objectifs qui pouvaient sembler irréalisables mais j’y suis arrivée.
+
+  Jeune diplômée de l’académie des Gobelins l’école de l’image à Paris en 2023, passionnée pour les arts de la scène, j’ai travaillé sur des projets couvrant de nombreuses disciplines, notamment des interfaces physiques, des sites webs, du motion design pour les médias sociaux, des performances, des installations sonores, vidéo et lumineuses.
+  
+  Au cours de ces études, je me découvre un grand intérêt pour l’univers de l’installation, l'audiovisuel et l'art vivant.
+  
+  J’aimerais continuer à créer des récits audiovisuels, des paysages éthérés multisensoriels entre les notions de réel, d'irréel et de surréel, partager des expériences d'immersion en lien avec la technologie, ouvrant ainsi un espace de discussion dans la sphère analogique.
+  Je travaille dans une variété de contextes et de formats impliquant les nouveaux médias et l'hybridité rendant les visiteurs acteurs et spectateurs de leur propre expérience.
+  
+  J’aime partager mon savoir, je suis intervenante à l’école des Gobelins pour des cours de Touchdesigner et design interactif.
+  Récemment membre actif du collectif 36 degrés Paris et Cookie Collectif, vous pourrez également voir un côté plus performatif de mon travail lors de leurs événements.
+
+  ***Je peux être contactée : rocheteaumn@gmail.com***
+  `;
+
+  const aboutContent = `
+  # Formations
+
+  Diplôme Bac+5 
+  Expert en création numérique intéractif Académie des Gobelins de Paris
+  Diplôme Bac+3
+  Web design et communication graphique Académie Excelia de La Rochelle 
+  BTS Bac+2
+  Assistante manager Académie Jean Dautet de La Rochelle 
+
+  # Résidences
+
+  - 2023 - Tamanoir Immersif Studio - résidence de travail installation sensorielle, création lumière & vidéo mapping projet “Opéra”, soutenue par le CNC et Opéra Garnier, à Anis Gras à Arcueil
+  - 2023 - Tamanoir Immersif Studio - résidence de travail installation immersive, création lumière & vidéo mapping projet “Unplug”, à Anis Gras à Arcueil
+  - 2022 - Tamanoir Immersif Studio - résidence de travail installation sensorielle & création lumière projet “Glenfiddish”, à Anis Gras à Arcueil
+  - 2022 - Tamanoir Immersif Studio - résidence de travail audiovisuel & création lumière projet “Les naufragés”, soutenue par le CNC, à Anis Gras à Arcueil
+
+  # Parcours
+
+  - 2023 - 2023 Intervenante Touch Designer Gobelins Paris 
+  - 2022 - 2023 Direction Artistique Junior Alternance Tamanoir Immersif Studio Paris
+  - 2020 - 2022 UI & UX Designer Junior Alternance Serious Frames La Rochelle
+  - 2020 - 2020 Graphic Design Artist Stage Serious Frames La Rochelle
+  - 2019 - 2019 Directrice Communication Association Babel Raid La Rochelle 
+  - 2019 - 2019 Multimedia Graphic Designer Stage Keen Ltd Malte
+  - 2018 - 2018 Digital Marketing Stage Groupe Rinos La Rochelle 
+  - 2017 - 2017 Digital Marketing Stage Lydia Feral PA Miami 
+
+  # Compétences
+  
+  Touch designer 
+  Madmapper & Smode (notions) 
+  Cinema 4D + Octane Render 
+  Blender 
+  Zbrush + Marvelous Designer (notions) 
+  Suite Adobe (Ae, Ai, Pr, Ps, Id, xd)
+  Figma 
+  Abelton (notions)
+  `;
+
   const about = {
-    headline:
-      "Although I'm passionate about the exponential advancements and innovations of multimedia technologies, I can not conceive these without a proper artistic direction. I'm able to create authentic, smart and well-executed ideas using digital and traditional media.",
+    headline: aboutHeadline,
+    content: aboutContent,
   };
 
   return <AboutContext.Provider value={about}>{children}</AboutContext.Provider>;

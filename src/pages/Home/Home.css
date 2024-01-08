@@ -20,4 +20,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: Create hooks for gallery
+.home {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}

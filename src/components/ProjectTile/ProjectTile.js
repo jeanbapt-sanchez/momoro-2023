@@ -20,33 +20,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 
-const ProjectPhoto = ({ src, alt, index }) => {
-  const sizes = [
+const PhotoTile = ({ src, alt, index }) => {
+  const sizesRef = useRef([
     { width: 600, height: 800 },
     { width: 400, height: 600 },
     { width: 700, height: 800 },
     { width: 500, height: 700 },
-  ];
-  const offsets = [
+  ]);
+
+  const offsetsRef = useRef([
     { x: 0, y: 100 },
     { x: 0, y: -100 },
     { x: 0, y: 80 },
     { x: 0, y: -100 },
-  ];
+  ]);
 
-  const { width, height } = sizes[index % sizes.length];
-  const { x, y } = offsets[index % offsets.length];
+  const style = useMemo(() => {
+    const { width, height } = sizesRef.current[index % sizesRef.current.length];
+    const { x, y } = offsetsRef.current[index % offsetsRef.current.length];
 
-  const style = {
-    width: `${width}px`,
-    height: `${height}px`,
-    objectFit: 'contain', // TODO: Choose between 'contain' which adapts to avoid exceeding the boundaries, 'cover' which covers the entirety without distortion, or 'fill' which fits perfectly within the box but distorts the image if it's not suitable. The sizes are predictable because it rotates, so the choice is between not caring and using 'contain' because it adapts the images.
-    transform: `translate(${x}px, ${y}px)`,
-  };
+    // TODO: Choose between 'contain' which adapts to avoid exceeding the boundaries, 'cover' which covers the entirety without distortion, or 'fill' which fits perfectly within the box but distorts the image if it's not suitable. The sizes are predictable because it rotates, so the choice is between not caring and using 'contain' because it adapts the images.
+    return {
+      width: `${width}px`,
+      height: `${height}px`,
+      objectFit: 'contain',
+      transform: `translate(${x}px, ${y}px)`,
+    };
+  }, [index]);
 
   return <img src={src} alt={alt} style={style} />;
 };
 
-export default ProjectPhoto;
+export default memo(PhotoTile);

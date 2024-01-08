@@ -25,7 +25,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home/Home';
 import About from './pages/About/About';
-import ProjectDetails from './pages/ProjectDetails/ProjectDetails';
+import Project from './pages/Project/Project';
 import { ProjectProvider } from './contexts/ProjectsContext';
 import { AboutProvider } from './contexts/AboutContext';
 
@@ -34,17 +34,15 @@ const App = () => {
   return (
     <ProjectProvider>
       <AboutProvider>
-        <div className="App">
-          <main>
-            <HashRouter>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/:projectId" element={<ProjectDetails />} />
-                <Route path="*" element={<Home />} />
-              </Routes>
-            </HashRouter>
-          </main>
+        <div className="app">
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/:projectId" element={<Project />} />
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </HashRouter>
         </div>
       </AboutProvider>
     </ProjectProvider>

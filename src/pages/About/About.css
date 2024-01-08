@@ -1,0 +1,142 @@
+/*
+ * Copyright © 2023 Jean-Baptiste Sanchez
+ *
+ * This file is part of Momoro Portfolio 2023.
+ *
+ * For more information, the source code is available at:
+ * https://github.com/jeanbapt-sanchez/momoro-portfolio-2023
+ *
+ * Momoro Portfolio 2023 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.about {
+  z-index: 1;
+  flex: 1;
+  position: relative;
+  height: 100vh; /* Fixed height for the container to allow scrolling */
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+.about__profile-background {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100vh;
+  background-color: var(--profile-background-color);
+  z-index: 1;
+  background-image: url('../../assets/images/photo-profile-morgane.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.about__headline {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  padding: 10%;
+  font-size: 14px;
+}
+
+.about__scroll-item {
+  /* Styles for positioning and snap scroll functionality of sections in 'about'. */
+  z-index: 2;
+  position: relative;
+  height: 100vh; /* Fixed height for the item to allow scrolling */
+  scroll-snap-align: start;
+}
+
+.about__content {
+  overflow-y: auto;
+  max-height: 100vh;
+  padding: 10%;
+}
+
+@media (max-width: 480px) {
+  /* Styles for small screens, typically mobile in portrait mode */
+  .about__headline {
+    font-size: 7px;
+    padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 5px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 10px;
+    padding: 60px 20px;
+  }
+}
+
+@media ((max-width: 480px) and (min-height: 769px)) {
+  /* Styles for large, modern smartphones with high-resolution screens */
+  .about__headline {
+    font-size: 10px;
+    padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 5px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 12px;
+    padding: 60px 20px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Styles for medium screens, typically tablets in portrait mode and phones in landscape mode */
+  .about__headline {
+    font-size: 10px;
+    padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 10px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 14px;
+    padding: 60px 20px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Styles for large screens, typically landscape tablets and small laptops */
+  .about__headline {
+    font-size: 15px;
+    padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 20px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 14px;
+    padding: 60px 20px;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Styles for very large screens, typically desktops and large displays */
+  .about__headline {
+    font-size: 15px;
+    padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 20px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 18px;
+    padding: 60px 20px;
+  }
+}

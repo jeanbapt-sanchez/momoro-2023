@@ -20,9 +20,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Gallery from './Gallery';
-import GalleryItem from './GalleryItem';
-import Layout from './Layout';
-import ProjectPhoto from './ProjectPhoto';
+import Gallery from './Gallery/Gallery';
+import GalleryItem from './Gallery/GalleryItem';
+import Layout from './Layout/Layout';
+import ProjectTile from './ProjectTile/ProjectTile';
 
-export { Gallery, GalleryItem, Layout, ProjectPhoto };
+export { Gallery, GalleryItem, Layout, ProjectTile };

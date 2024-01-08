@@ -20,48 +20,115 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Renderer, Camera, Transform } from 'ogl';
-import normalizeWheel from 'normalize-wheel';
-import { ProjectContext } from '../contexts';
+// import normalizeWheel from 'normalize-wheel';
+import { ProjectContext } from '../../contexts';
 import GalleryItem from './GalleryItem';
 import { useNavigate } from 'react-router-dom';
+import useGalleryScroll from '../../hooks/useGalleryScroll';
+import './Gallery.css';
 
 const Gallery = ({ onScroll }) => {
-  // State Hooks
-  const [direction, setDirection] = useState(0);
-  const [previousDirection, setPreviousDirection] = useState(0);
-  const [startTouchY, setStartTouchY] = useState(0);
-  const [lastTime, setLastTime] = useState(Date.now());
+  // const { handleWheel, handleTouchStart, handleTouchMove, scroll } = useGalleryScroll(onScroll);
+  const { scroll } = useGalleryScroll(onScroll);
 
-  // Context Hooks
   const projectData = useContext(ProjectContext);
 
-  // Memo Hooks
+  // const [direction, setDirection] = useState(0);
+  // const [previousDirection, setPreviousDirection] = useState(0);
+  const [lastTime, setLastTime] = useState(Date.now());
+
   const thumbnails = useMemo(() => projectData.map((project) => project.thumbnail), [projectData]);
   const titles = useMemo(() => projectData.map((project) => project.title), [projectData]);
   const ids = useMemo(() => projectData.map((project) => project.id), [projectData]);
 
-  // Ref Hooks
   const sceneRefs = useRef({
     gl: null,
     camera: null,
     scene: null,
     renderer: null,
   });
-  const scroll = useRef({
-    value: 0,
-    target: 0,
-    ease: 0.2,
-    velocity: 0,
-    friction: 0.99,
-    maxSpeed: 100,
-    speed: 0.01,
-  });
+  // const scroll = useRef({
+  //   value: 0,
+  //   target: 0,
+  //   ease: 0.2,
+  //   velocity: 0,
+  //   friction: 0.99,
+  //   maxSpeed: 100,
+  //   speed: 0.01,
+  // });
   const spacing = useRef(15);
+  // const lastTouchY = useRef(0);
+  const mediasRef = useRef([]);
 
-  // Navigate Hooks
   const navigate = useNavigate();
+
+  // const updateScroll = useCallback(
+  //   (delta) => {
+  //     setDirection(Math.sign(delta));
+  //     if (direction !== previousDirection) {
+  //       scroll.current.velocity *= 0.5; // Reduce scrolling speed by half when direction changes
+  //     }
+  //     scroll.current.velocity += delta * scroll.current.speed;
+  //     scroll.current.velocity = Math.min(
+  //       Math.max(scroll.current.velocity, -scroll.current.maxSpeed),
+  //       scroll.current.maxSpeed,
+  //     ); // Limit scrolling speed
+  //     setPreviousDirection(direction);
+  //     onScroll(); // Call scroll handler
+  //   },
+  //   [direction, previousDirection, onScroll],
+  // );
+
+  // const handleWheel = useCallback(
+  //   (event) => {
+  //     event.preventDefault();
+  //     const normalized = normalizeWheel(event);
+  //     updateScroll(normalized.pixelY);
+  //   },
+  //   [updateScroll],
+  // );
+
+  // const handleTouchStart = useCallback((event) => {
+  //   lastTouchY.current = event.touches[0].clientY;
+  // }, []);
+
+  // const handleTouchMove = useCallback(
+  //   (event) => {
+  //     event.preventDefault();
+  //     const currentTouchY = event.touches[0].clientY;
+  //     const deltaY = currentTouchY - lastTouchY.current;
+  //     const direction = deltaY > 0 ? 1 : -1;
+  //     const touchNormalizationFactor = 5;
+
+  //     const normalizedDelta = Math.abs(deltaY) * direction * touchNormalizationFactor;
+  //     updateScroll(normalizedDelta);
+
+  //     lastTouchY.current = currentTouchY;
+  //   },
+  //   [updateScroll],
+  // );
+
+  const handleResize = useCallback(() => {
+    if (sceneRefs.current.renderer && sceneRefs.current.camera) {
+      sceneRefs.current.renderer.setSize(window.innerWidth, window.innerHeight);
+      // sceneRefs.current.camera.perspective({
+      //   aspect: (sceneRefs.current.gl.canvas.width / sceneRefs.current.gl.canvas.height),
+      // });
+      sceneRefs.current.gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+
+      mediasRef.current.forEach((media) => {
+        media.updateSize();
+      });
+
+      // Redessiner la scène
+      sceneRefs.current.renderer.render({
+        scene: sceneRefs.current.scene,
+        camera: sceneRefs.current.camera,
+      });
+    }
+  }, []);
 
   // TODO: Separate Media (Items) and Background
 
@@ -89,6 +156,7 @@ const Gallery = ({ onScroll }) => {
       media.titleElement.style.transition = 'opacity 0.3s ease-in-out';
       return media;
     });
+    mediasRef.current = medias;
 
     // User interaction management
     setupEventListeners();
@@ -102,18 +170,18 @@ const Gallery = ({ onScroll }) => {
         sceneRefs.current.gl.COLOR_BUFFER_BIT | sceneRefs.current.gl.DEPTH_BUFFER_BIT,
       );
 
-      // Apply friction factor to velocity
-      scroll.current.velocity *= scroll.current.friction;
+      // // Apply friction factor to velocity
+      // scroll.current.velocity *= scroll.current.friction;
 
-      // Updated scroll.current.value with velocity and scroll value with an "ease in" effect
-      scroll.current.value +=
-        (scroll.current.target - scroll.current.value) * scroll.current.ease +
-        scroll.current.velocity;
+      // // Updated scroll.current.value with velocity and scroll value with an "ease in" effect
+      // scroll.current.value +=
+      //   (scroll.current.target - scroll.current.value) * scroll.current.ease +
+      //   scroll.current.velocity;
 
-      // If the velocity is very small, set it to 0 to avoid unwanted movements
-      if (Math.abs(scroll.current.velocity) < 0.01) {
-        scroll.current.velocity = 0;
-      }
+      // // If the velocity is very small, set it to 0 to avoid unwanted movements
+      // if (Math.abs(scroll.current.velocity) < 0.01) {
+      //   scroll.current.velocity = 0;
+      // }
 
       const viewWidth = 105;
 
@@ -138,10 +206,10 @@ const Gallery = ({ onScroll }) => {
       });
 
       // If scroll.current.value is close to scroll.current.target, reset scroll.current.target
-      const tolerance = 1; // Une valeur beaucoup plus petite
-      if (Math.abs(scroll.current.value - scroll.current.target) < tolerance) {
-        scroll.current.value = scroll.current.target;
-      }
+      // const tolerance = 1; // Une valeur beaucoup plus petite
+      // if (Math.abs(scroll.current.value - scroll.current.target) < tolerance) {
+      //   scroll.current.value = scroll.current.target;
+      // }
 
       sceneRefs.current.renderer.render({
         scene: sceneRefs.current.scene,
@@ -151,8 +219,10 @@ const Gallery = ({ onScroll }) => {
     };
     update();
 
+    requestAnimationFrame(update);
     return () => {
-      cleanup(medias);
+      cleanupScene(medias);
+      cancelAnimationFrame(update);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onScroll, titles, thumbnails, ids]);
@@ -171,7 +241,7 @@ const Gallery = ({ onScroll }) => {
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    const canvasContainer = document.getElementById('canvas-container');
+    const canvasContainer = document.getElementById('galleryCanvas');
     canvasContainer.appendChild(gl.canvas);
     return renderer;
   };
@@ -179,29 +249,29 @@ const Gallery = ({ onScroll }) => {
   const createCamera = (gl) => {
     const camera = new Camera(gl);
     camera.perspective({ near: 0.1, far: 100 });
+    // camera.perspective({ near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight });
     camera.position.z = 20;
     return camera;
   };
 
   const createScene = () => new Transform();
 
+  // IN CLEANING
   const setupEventListeners = () => {
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
-    window.addEventListener('mousewheel', handleMouseWheel);
+    // window.addEventListener('wheel', handleWheel, { passive: false });
+    // window.addEventListener('touchstart', handleTouchStart);
+    // window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('resize', handleResize);
   };
 
   const cleanupEventListeners = () => {
-    window.removeEventListener('wheel', handleWheel);
-    window.removeEventListener('mousewheel', handleMouseWheel);
+    // window.removeEventListener('wheel', handleWheel);
+    // window.removeEventListener('touchstart', handleTouchStart);
+    // window.removeEventListener('touchmove', handleTouchMove);
     window.removeEventListener('resize', handleResize);
-    window.removeEventListener('touchstart', handleTouchStart);
-    window.removeEventListener('touchmove', handleTouchMove);
   };
 
-  const cleanup = (medias) => {
+  const cleanupScene = (medias) => {
     sceneRefs.current.gl.canvas.remove();
     cleanupEventListeners();
     medias.forEach((media) => {
@@ -209,73 +279,7 @@ const Gallery = ({ onScroll }) => {
     });
   };
 
-  const handleWheel = (event) => {
-    // Check if the event is coming from the parent element or its children
-    event.preventDefault();
-    setDirection(Math.sign(event.deltaY));
-
-    if (direction !== previousDirection) {
-      scroll.current.velocity *= 0.5; // Reduce scrolling speed by half when direction changes
-    }
-    scroll.current.velocity += event.deltaY * scroll.current.speed;
-    scroll.current.velocity = Math.min(
-      Math.max(scroll.current.velocity, -scroll.current.maxSpeed),
-      scroll.current.maxSpeed,
-    );
-
-    setPreviousDirection(direction); // Update previous direction
-
-    // Call scroll handler
-    onScroll();
-  };
-
-  const handleTouchStart = (event) => {
-    setStartTouchY(event.touches[0].clientY);
-  };
-
-  const handleTouchMove = (event) => {
-    const delta = startTouchY - event.touches[0].clientY;
-    setDirection(Math.sign(delta));
-
-    if (direction !== previousDirection) {
-      scroll.current.velocity *= 0.5; // Reduce scrolling speed by half when direction changes
-    }
-
-    scroll.current.velocity += delta;
-    scroll.current.velocity = Math.min(
-      Math.max(scroll.current.velocity, -scroll.current.maxSpeed),
-      scroll.current.maxSpeed,
-    );
-    setStartTouchY(event.touches[0].clientY);
-
-    setPreviousDirection(direction); // Update previous directions
-  };
-
-  const handleMouseWheel = (event) => {
-    const normalized = normalizeWheel(event);
-    const { pixelY } = normalized;
-
-    scroll.current.velocity += pixelY;
-    scroll.current.velocity = Math.min(
-      Math.max(scroll.current.velocity, -scroll.current.maxSpeed),
-      scroll.current.maxSpeed,
-    ); // Limit scrolling speed
-  };
-
-  const handleResize = () => {
-    sceneRefs.current.renderer.setSize(window.innerWidth, window.innerHeight);
-    sceneRefs.current.camera.perspective({
-      aspect: sceneRefs.current.gl.canvas.width / sceneRefs.current.gl.canvas.height,
-    });
-    sceneRefs.current.gl.viewport(
-      0,
-      0,
-      sceneRefs.current.gl.canvas.width,
-      sceneRefs.current.gl.canvas.height,
-    );
-  };
-
-  return <div id="canvas-container"></div>;
+  return <div className="gallery-canvas" id="galleryCanvas" />;
 };
 
-export default Gallery;
+export default memo(Gallery);

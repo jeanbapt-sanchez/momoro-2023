@@ -20,45 +20,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Gallery, Layout } from '../../components';
+import { throttle } from 'lodash';
+import './Home.css';
 
 const Home = () => {
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const scrollTimeout = useRef(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollEndTimeoutRef = useRef(null);
 
   const handleScroll = useCallback(() => {
-    // If scrolling is detected, set hasScrolled to true
-    setHasScrolled(true);
-
-    // Delete if a delay is already in progress
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
-    }
-
-    // Reset hasScrolled to false after a certain delay (e.g. 2 seconds)
-    scrollTimeout.current = setTimeout(() => {
-      setHasScrolled(false);
+    setIsScrolling(true);
+    if (scrollEndTimeoutRef.current) clearTimeout(scrollEndTimeoutRef.current);
+    scrollEndTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
     }, 2000);
-  }, []); // Dependencies are empty because we are not using any external variables in the callback
+  }, []);
+
+  // eslint-disable-next-line
+  const throttledHandleScroll = useCallback(throttle(handleScroll, 100), [handleScroll]);
 
   useEffect(() => {
-    // Désactiver le défilement lorsque le composant est monté
-    document.body.classList.add('no-scroll');
+    if (!document.body.classList.contains('no-scroll')) document.body.classList.add('no-scroll');
 
-    // Re-enable scrolling when component is unmounted
     return () => {
-      document.body.classList.remove('no-scroll');
+      if (document.body.classList.contains('no-scroll'))
+        document.body.classList.remove('no-scroll');
+      if (scrollEndTimeoutRef.current) clearTimeout(scrollEndTimeoutRef.current);
     };
   }, []);
 
   return (
-    <Layout hasScrolled={hasScrolled}>
-      <div className="Home">
-        <Gallery onScroll={handleScroll} />
+    <Layout isScrolling={isScrolling}>
+      <div className="home">
+        <Gallery onScroll={throttledHandleScroll} />
       </div>
     </Layout>
   );
 };
 
-export default Home;
+export default memo(Home);

@@ -22,45 +22,55 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import './Layout.css';
 
-const Layout = ({ children, isAboutPage, hasScrolled }) => {
+const Layout = ({ children, isAboutPage, isScrolling }) => {
   const [showButtons, setShowButtons] = useState(false);
 
   return (
     <>
-      <div className="Layout">
-        <div className="Layout-header">
-          <Link to="/" className="Layout-title">
+      <div className="layout">
+        <div className="ui-segment">
+          <Link to="/" className="ui-action ui-action--momoro">
             Momoro
           </Link>
           {!isAboutPage && (
-            <Link to="/about" className="Layout-about">
+            <Link to="/about" className="ui-action">
               About
             </Link>
           )}
         </div>
-        <div className="Layout-footer">
-          <div className="Layout-contact">
-            <div className="Layout-contact">
-              {showButtons ? (
-                <div className="Layout-social-buttons fade-in-contacts">
-                  <button>Li</button>
-                  <button>In</button>
-                  <button>Be</button>
-                  <button>@</button>
-                  <button onClick={() => setShowButtons(!showButtons)}>×</button>
-                </div>
-              ) : (
+        <div className="ui-segment">
+          <div
+            className={`ui-segment__contact ${showButtons ? 'ui-segment__contact--fade-in' : ''}`}
+          >
+            {showButtons ? (
+              <>
+                <button className="ui-action ui-action--social-button">Li</button>
+                <button className="ui-action ui-action--social-button">In</button>
+                <button className="ui-action ui-action--social-button">Be</button>
+                <button className="ui-action ui-action--social-button ">@</button>
                 <button
+                  className="ui-action ui-action--social-button"
                   onClick={() => setShowButtons(!showButtons)}
-                  className="Layout-contact-button"
                 >
-                  Contact
+                  ×
                 </button>
-              )}
-            </div>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowButtons(!showButtons)}
+                className="ui-action ui-action--contact-button"
+              >
+                Contact
+              </button>
+            )}
           </div>
-          <span className={`${hasScrolled ? 'fade-out' : 'fade-in'} Layout-scroll non-selectable`}>
+          <span
+            className={`ui-segment__scroll-hint ${
+              isScrolling ? 'ui-segment__scroll-hint--fade-out' : 'ui-segment__scroll-hint--fade-in'
+            } non-selectable`}
+          >
             Scroll
           </span>
           <span className="non-selectable">FR</span>
