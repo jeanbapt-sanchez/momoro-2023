@@ -22,5 +22,14 @@
 
 import useHideScrollbar from './useHideScrollbar';
 import useOnlyHorizontalScroll from './useOnlyHorizontalScroll';
+import useGalleryScroll from './useGalleryScroll';
+import useWebGLScene from './useWebGLScene';
+import useGalleryBackground from './useGalleryBackground';
 
-export { useHideScrollbar, useOnlyHorizontalScroll };
+export {
+  useHideScrollbar,
+  useOnlyHorizontalScroll,
+  useGalleryScroll,
+  useWebGLScene,
+  useGalleryBackground,
+};

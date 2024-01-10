@@ -23,6 +23,7 @@
 import { mat4, vec4 } from 'gl-matrix';
 import { Plane, Program, Mesh, Texture, Vec2, Raycast } from 'ogl';
 
+// TODO: Migrate to GalleryItem Functional Component Nested of Gallery Functional Component
 class GalleryItem {
   constructor({ gl, image, scene, spacing, camera, id, navigate }) {
     this.gl = gl;
@@ -39,16 +40,19 @@ class GalleryItem {
 
     this.raycaster = new Raycast(this.camera);
 
+    this.screen = { width: window.innerWidth, height: window.innerHeight };
+    this.viewport = { width: gl.drawingBufferWidth, height: gl.drawingBufferHeight };
+
     if (window.innerWidth <= 768) {
       // Mobile
       this.imageWidth = (760 / 2) * 0.75;
       this.imageHeight = (500 / 2) * 0.75;
-      this.titleFontSize = 96 / 2;
-    } else if (window.innerWidth > 768 && window.innerWidth <= 1024) {
+      this.titleFontSize = 96 * 0.5;
+    } else if (window.innerWidth > 768 || window.innerWidth <= 1024) {
       // Tablette
-      this.imageWidth = 760 / 2;
-      this.imageHeight = 500 / 2;
-      this.titleFontSize = 96 / 1.5;
+      this.imageWidth = 760 * 0.85;
+      this.imageHeight = 500 * 0.85;
+      this.titleFontSize = 96 * 0.75;
     } else {
       // Desktop
       this.imageWidth = 760;
@@ -56,118 +60,15 @@ class GalleryItem {
       this.titleFontSize = 96;
     }
 
-    this.backgroundShaderProgram = this.createBackgroundShader();
-    this.createBackgroundMesh();
     this.createShader();
     this.createMesh();
     this.bindEvents();
   }
 
-  updateSize() {
-    if (window.innerWidth <= 768) {
-      this.imageWidth = 760;
-      this.imageHeight = 300;
-      this.titleFontSize = 96 / 2;
-    } else if (window.innerWidth > 768 && window.innerWidth <= 1024) {
-      this.imageWidth = 760 / 2;
-      this.imageHeight = 500 / 2;
-      this.titleFontSize = 96 / 1.5;
-    } else {
-      this.imageWidth = 760;
-      this.imageHeight = 500;
-      this.titleFontSize = 96;
-    }
-    const fov = this.camera.fov * (Math.PI / 180);
-    const distanceToPlane = this.camera.position.z;
-    const heightInGLUnits = 2 * Math.tan(fov / 2) * distanceToPlane;
-    const widthInGLUnits = heightInGLUnits * this.camera.aspect;
-    const imageWidthInGLUnits = (this.imageWidth / window.innerWidth) * widthInGLUnits;
-    const imageHeightInGLUnits = (this.imageHeight / window.innerHeight) * heightInGLUnits;
-    this.mesh.scale.x = imageWidthInGLUnits;
-    this.mesh.scale.y = imageHeightInGLUnits;
-    console.log('change dimension', this.mesh.scale.x);
-  }
-
-  createBackgroundShader() {
-    return new Program(this.gl, {
-      vertex: `
-      attribute vec2 position;
-      uniform mat4 modelViewMatrix;
-      uniform mat4 projectionMatrix;
-      varying vec2 vUv;
-      void main() {
-        vUv = position.xy * 0.5 + 0.5;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 0.0, 1.0);
-      }
-    `,
-      fragment: `
-      precision highp float;
-      varying vec2 vUv;
-      uniform vec2 uMouse;
-      uniform float uTime;
-    
-      float length2(vec2 p) {
-        return dot(p, p);
-      }
-    
-      float noise(vec2 p) {
-        return fract(sin(fract(sin(p.x) * (43.13311)) + p.y) * 31.0011);
-      }
-    
-      float worley(vec2 p) {
-        float d = 1e30;
-        for (int xo = -1; xo <= 1; ++xo) {
-          for (int yo = -1; yo <= 1; ++yo) {
-            vec2 tp = floor(p) + vec2(xo, yo);
-            d = min(d, length2(p - tp - noise(tp)));
-          }
-        }
-        return 3.0 * exp(-4.0 * abs(2.5 * d - 1.0));
-      }
-    
-      float fworley(vec2 p) {
-        return sqrt(sqrt(sqrt(
-          worley(p * 5.0 + 0.05 * uTime) *
-          sqrt(worley(p * 50.0 + 0.12 + -0.1 * uTime)) *
-          sqrt(sqrt(worley(p * -10.0 + 0.03 * uTime))))
-        ));
-      }
-    
-      void main() {
-        vec2 uv = vUv;
-        vec2 mouseUV = uMouse;
-        vec2 p = uv - mouseUV;
-    
-        float t = fworley(p * 1500.0);
-        t *= exp(-length2(abs(0.01 * p - 1.0)));
-        vec3 color = vec3(t * 0.2, 1. * t, pow(t, 0.9 - t)) * 0.35 ; // replace 0.35, 0.65 for the last numbers and test wave
-    
-        float dist = length(p * 4.);
-        float worleyValue = fworley(p * 1500.0);
-        float wave = sin(dist * 20.0 - uTime * 5.0) * worleyValue * .0009;
-    
-        gl_FragColor = vec4(color + vec3(wave), 1.0);
-      }
-    `,
-      uniforms: {
-        uMouse: { value: new Vec2(0, 0) },
-        uTime: { value: 0.0 },
-      },
-    });
-  }
-
-  createBackgroundMesh() {
-    const backgroundGeometry = new Plane(this.gl, { width: 100, height: 100 });
-    const backgroundMesh = new Mesh(this.gl, {
-      geometry: backgroundGeometry,
-      program: this.backgroundShaderProgram,
-    });
-    backgroundMesh.setParent(this.scene);
-  }
-
   createShader() {
     const texture = new Texture(this.gl);
     const vertex = `
+      precision highp float;
       attribute vec2 uv;
       attribute vec3 position;
       uniform mat4 modelViewMatrix;
@@ -178,29 +79,48 @@ class GalleryItem {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `;
+
     const fragment = `
-    precision highp float;
-    uniform sampler2D tMap;
-    uniform float isHovered;
-    varying vec2 vUv;
-    void main() {
-      vec4 texColor = texture2D(tMap, vUv);
-      float grayscale = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
-      gl_FragColor = mix(vec4(grayscale, grayscale, grayscale, 1.0), texColor, isHovered);
-    }
-  `;
+      precision highp float;
+      uniform sampler2D tMap;
+      uniform float isHovered;
+      uniform vec2 uViewportSizes;
+      uniform vec2 uPlaneSizes;
+      uniform vec2 uImageSizes;
+      varying vec2 vUv;
+      void main() {
+        vec2 ratio = vec2(
+          min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
+          min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
+        );
+        
+        vec2 uv = vec2(
+          vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+          vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
+        );
+
+        vec4 texColor = texture2D(tMap, uv);
+        float grayscale = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+        gl_FragColor = mix(vec4(grayscale, grayscale, grayscale, 1.0), texColor, isHovered);
+      }
+    `;
+
     this.program = new Program(this.gl, {
       vertex,
       fragment,
       uniforms: {
         tMap: { value: texture },
         isHovered: { value: 0 }, // 0 for not hovered, 1 for hovered
+        uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
+        uPlaneSizes: { value: [0, 0] },
+        uImageSizes: { value: [0, 0] },
       },
     });
     const img = new Image();
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
+      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
     };
   }
 
@@ -257,26 +177,6 @@ class GalleryItem {
   onMouseMove(event) {
     // Event manage mouse effect on items and on the shaders
 
-    // Update Background Shader mouse position
-    const cameraZ = this.camera.position.z;
-    const aspectRatio = this.camera.aspect;
-    const fieldOfView = this.camera.fov;
-    const scale = 0.47;
-
-    const x =
-      ((event.clientX / window.innerWidth) * 2 - 1) *
-      aspectRatio *
-      (cameraZ * Math.tan((fieldOfView * Math.PI) / 180 / 2)) *
-      scale;
-    const y =
-      ((-((event.clientY / window.innerHeight) * 2 - 1) *
-        (cameraZ * Math.tan((fieldOfView * Math.PI) / 180 / 2))) /
-        aspectRatio) *
-      scale;
-    const mousePosition = new Vec2(x, y);
-
-    this.backgroundShaderProgram.uniforms.uMouse.value = mousePosition;
-
     // Calculate the normalized mouse position
     const normalizedX = (event.clientX / window.innerWidth) * 2 - 1;
     const normalizedY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -303,6 +203,25 @@ class GalleryItem {
       this.titleElement.style.opacity = 0; // Change title opacity
       this.gl.canvas.style.cursor = 'default'; // Reset cursor
     }
+  }
+
+  onResize({ screen, viewport } = {}) {
+    if (screen) {
+      this.screen = screen;
+    }
+
+    if (viewport) {
+      this.viewport = viewport;
+
+      this.program.uniforms.uViewportSizes.value = [this.viewport.width, this.viewport.height];
+    }
+
+    this.scale = this.screen.height / 1500;
+    this.mesh.scale.x = (this.viewport.width * (this.imageWidth * this.scale)) / this.screen.width;
+    this.mesh.scale.y =
+      (this.viewport.height * (this.imageHeight * this.scale)) / this.screen.height;
+
+    this.program.uniforms.uPlaneSizes.value = [this.mesh.scale.x, this.mesh.scale.y];
   }
 
   setPosition(index) {
@@ -356,10 +275,6 @@ class GalleryItem {
     this.titleElement.style.top = `${
       screenPosition.y + this.imageHeight / 2 + distanceFromCenterInPixel
     }px`; // Adjust this to position the title at the bottom of the image
-  }
-
-  update(deltaTime) {
-    this.backgroundShaderProgram.uniforms.uTime.value += deltaTime * this.speedFactor;
   }
 }
 
