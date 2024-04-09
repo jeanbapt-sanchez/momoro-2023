@@ -46,10 +46,30 @@ const Layout = ({ children, isAboutPage, isScrolling }) => {
           >
             {showButtons ? (
               <>
-                <button className="ui-action ui-action--social-button">Li</button>
-                <button className="ui-action ui-action--social-button">In</button>
-                <button className="ui-action ui-action--social-button">Be</button>
-                <button className="ui-action ui-action--social-button ">@</button>
+                <a
+                  className="ui-action ui-action--social-button"
+                  href="https://www.linkedin.com/in/morgane-rocheteau-973458168"
+                >
+                  Li
+                </a>
+                <a
+                  className="ui-action ui-action--social-button"
+                  href="https://www.instagram.com/morgane.rocheteau"
+                >
+                  In
+                </a>
+                <a
+                  className="ui-action ui-action--social-button"
+                  href="https://www.behance.net/rocheteaumd669"
+                >
+                  Be
+                </a>
+                <a
+                  className="ui-action ui-action--social-button"
+                  href="mailto:rocheteaumn@gmail.com?subject=Contact&"
+                >
+                  @
+                </a>
                 <button
                   className="ui-action ui-action--social-button"
                   onClick={() => setShowButtons(!showButtons)}

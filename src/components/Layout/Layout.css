@@ -50,6 +50,7 @@
 }
 
 .ui-action--social-button {
+  text-decoration: none;
   background-color: transparent;
   border: 0.01px solid var(--default-text-color);
   box-shadow:

@@ -126,11 +126,25 @@
   }
 }
 
-@media (min-width: 1025px) {
-  /* Styles for very large screens, typically desktops and large displays */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* Styles for large screens, typically desktops and large displays */
   .about__headline {
     font-size: 15px;
     padding: 60px 20px;
+  }
+  .about__headline > p {
+    margin: 20px 0px 0px 0px;
+  }
+  .about__content {
+    font-size: 18px;
+    padding: 60px 20px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* Styles for very large screens above hd resolution */
+  .about__headline {
+    font-size: 15px;
   }
   .about__headline > p {
     margin: 20px 0px 0px 0px;

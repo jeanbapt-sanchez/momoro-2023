@@ -28,6 +28,7 @@ import About from './pages/About/About';
 import Project from './pages/Project/Project';
 import { ProjectProvider } from './contexts/ProjectsContext';
 import { AboutProvider } from './contexts/AboutContext';
+import Overlay from './pages/Overlay/Overlay';
 
 // TODO: Add i18n for automatic translation
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
               <Route path="*" element={<Home />} />
             </Routes>
           </HashRouter>
+          <Overlay />
         </div>
       </AboutProvider>
     </ProjectProvider>
