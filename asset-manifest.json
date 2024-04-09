@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.5e71b2ab.css",
-    "main.js": "/static/js/main.3fab7b73.js",
+    "main.css": "/static/css/main.7799cde4.css",
+    "main.js": "/static/js/main.7f978624.js",
     "static/js/787.e46b5cc3.chunk.js": "/static/js/787.e46b5cc3.chunk.js",
     "static/media/placeholder.jpg": "/static/media/placeholder.a24049b674492a0b43d5.jpg",
     "static/media/photo-profile-morgane.jpg": "/static/media/photo-profile-morgane.a451473198f008c21713.jpg",
@@ -214,12 +214,12 @@
     "static/media/thumbnail-loree.webp": "/static/media/thumbnail-loree.5e2f5e9b5245af6fd3ae.webp",
     "static/media/logo-mo.svg": "/static/media/logo-mo.afee4c83efb2d1e26f0a2dc110203ed7.svg",
     "index.html": "/index.html",
-    "main.5e71b2ab.css.map": "/static/css/main.5e71b2ab.css.map",
-    "main.3fab7b73.js.map": "/static/js/main.3fab7b73.js.map",
+    "main.7799cde4.css.map": "/static/css/main.7799cde4.css.map",
+    "main.7f978624.js.map": "/static/js/main.7f978624.js.map",
     "787.e46b5cc3.chunk.js.map": "/static/js/787.e46b5cc3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5e71b2ab.css",
-    "static/js/main.3fab7b73.js"
+    "static/css/main.7799cde4.css",
+    "static/js/main.7f978624.js"
   ]
 }
